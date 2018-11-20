@@ -1,0 +1,31 @@
+# -*- coding: utf8 -*-
+from googletrans import Translator
+import pandas as pd
+from pandas import ExcelWriter
+from pandas import ExcelFile
+translator = Translator()
+
+# Bangla to english translation using googletrans within 1000 char from file name
+# 'in.txt'
+
+xl =pd.ExcelFile('allCommentsDatasetWithNewsID.xlsx')
+df = xl.parse("ALLCommentsDATA")
+out = open('commentsTranslatetoEng.txt','w')
+message=[]
+index=[]
+j=0
+for i in df.index:
+    j=j+1
+    if(i>10):break
+    try:
+        inputText= df['message'][i]
+        if(len(inputText) > 1000):
+                continue
+        tranText = translator.translate(inputText, dest='en')
+        out.write(tranText.text)
+        
+    except UnicodeEncodeError,e:
+        message.append("error")
+        continue
+columns=['Message']
+out.close()
